@@ -42,7 +42,7 @@ public class Hucha {
 	}
 
 	public void setTotal() {
-		System.out.println("Introduce el total..");
+		System.out.println("Introduce el total que va a tener la hucha..");
 		total = teclado.nextInt();
 
 	}
