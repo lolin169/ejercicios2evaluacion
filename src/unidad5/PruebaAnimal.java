@@ -17,5 +17,5 @@ public class PruebaAnimal {
 		System.out.println(uno);
 		System.out.println(dos.toString());
 	}
-
+//prueba
 }
