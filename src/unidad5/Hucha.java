@@ -3,7 +3,7 @@ package unidad5;
 import java.util.Scanner;
 
 public class Hucha {
-	 Scanner teclado = new Scanner(System.in);
+	Scanner teclado = new Scanner(System.in);
 //	Ejercicio 2: Hucha
 //	Definir una clase llamada Hucha según las especificaciones siguientes:
 //	• La hucha solo admite monedas de uno y dos euros y billetes de 5, 10, 20 y 50 euros.
@@ -43,38 +43,31 @@ public class Hucha {
 	}
 
 	public Hucha(int total) {
-	    this();
+		this();
 		meterDinero(total);
 		System.out.println("Hucha Creada");
 	}
 
-	public Hucha(int total, int cincuenta, int veinte, int diez, int cinco, int dos, int uno) {
+	public Hucha(int cincuenta, int veinte, int diez, int cinco, int dos, int uno) {
 		this();
-		if(total==(uno+(dos*2)+(cinco*5)+(diez*10)+(veinte*20)+(cincuenta*50))) {
-		this.total = total;
 		desglose[0] = cincuenta;
 		desglose[1] = veinte;
 		desglose[2] = diez;
 		desglose[3] = cinco;
 		desglose[4] = dos;
 		desglose[5] = uno;
-		}else {
-			System.out.println("Error, el desglose no es igual que el total");
-		}
-
+		total = getTotal();
 	}
 
 	public int getTotal() {
+		for (int i = 0; i < desglose.length; i++)
+			total += desglose[i] * cambio[i];
 		return total;
 	}
 
 	public void setTotal() {
 		System.out.println("Introduce el total que ha de tener la hucha..");
 		total = teclado.nextInt();
-	}
-
-	public String getpass() {
-		return pass;
 	}
 
 	public void setpass() {
@@ -102,7 +95,6 @@ public class Hucha {
 	}
 
 	public void setAbierta(boolean abierta, String pass) {
-
 		if (this.pass.equals(pass)) {
 			this.abierta = true;
 		}
@@ -112,7 +104,7 @@ public class Hucha {
 	@Override
 	public String toString() {
 		String estado;
-		if (this.abierta) {
+		if (abierta) {
 			estado = "Hucha ABIERTA";
 		} else {
 			estado = "Hucha CERRADA";
@@ -156,38 +148,28 @@ public class Hucha {
 			System.out.println("Error!!");
 			cerrarHucha();
 		}
-
 	}
 
 	public void introduceDesglose() {
-		System.out.println("Introduce la cantidad de dinero total ..");
-		int total = teclado.nextInt();
-		int[] dinero = { 0, 0, 0, 0, 0, 0, 0 };
+		int metido = 0;
+		int[] dinero = { 0, 0, 0, 0, 0, 0 };
 		System.out.println("Introduce la cantidad de monedas de € ..(total:" + total + ")");
 		dinero[5] = teclado.nextInt();
-		total += dinero[5];
 		System.out.println("Introduce la cantidad de monedas de 2 € ..(total:" + total + ")");
 		dinero[4] = teclado.nextInt();
-		total += (dinero[4] * 2);
 		System.out.println("Introduce la cantidad de billetes de 5 € ..(total:" + total + ")");
 		dinero[3] = teclado.nextInt();
-		total += (dinero[3] * 5);
 		System.out.println("Introduce la cantidad de billetes de 10 € ..(total:" + total + ")");
 		dinero[2] = teclado.nextInt();
-		total += (dinero[2] * 10);
 		System.out.println("Introduce la cantidad de billetes de 20 € ..(total:" + total + ")");
 		dinero[1] = teclado.nextInt();
-		total += (dinero[1] * 20);
 		System.out.println("Introduce la cantidad de billetes de 50 € ..(total:" + total + ")");
 		dinero[0] = teclado.nextInt();
-		total += (dinero[0] * 50);
-
-		if (compruebaDesglose(dinero, total)) {
-			meterDinero(dinero);
-		} else {
-			introduceDesglose();
+		for (int i = 0; i < dinero.length; i++) {
+			metido += dinero[i] * cambio[i];
+			desglose[i] += dinero[i];
 		}
-
+		System.out.println("Has metido a la hucha " + metido + " €");
 	}
 
 	public boolean compruebaDesglose(int[] dinero, int total) {
@@ -204,24 +186,13 @@ public class Hucha {
 				introduceDesglose();
 		}
 		return correcto;
-
-	}
-
-	public boolean compruebaTotal(int total) {
-		boolean correcto = false;
-		if (this.total > total) {
-			correcto = true;
-			return correcto;
-		}
-
-		return correcto;
 	}
 
 	public void meterDinero(int[] dinero) {
 		abrirHucha();
 		for (int i = 0; i < cambio.length; i++) {
-			desglose[i] = dinero[i];
-			this.total += dinero[i];
+			desglose[i] += dinero[i];
+			this.total += dinero[i] * cambio[i];
 		}
 		abierta = false;
 	}
@@ -230,7 +201,7 @@ public class Hucha {
 		abrirHucha();
 		this.total += total;
 		for (int i = 0; i < cambio.length; i++) {
-			if (total >= desglose[i]) {
+			if (total >= cambio[i]) {
 				desglose[i] += (total / cambio[i]);
 				total %= cambio[i];
 			}
@@ -239,41 +210,60 @@ public class Hucha {
 	}
 
 	public void meterDinero(int tipo, int cantidad) {
+		if (tipo == 50)
+			tipo = 0;
+		else if (tipo == 20)
+			tipo = 1;
+		else if (tipo == 10)
+			tipo = 2;
+		else if (tipo == 5)
+			tipo = 3;
+		else if (tipo == 2)
+			tipo = 4;
+		else if (tipo == 1)
+			tipo = 5;
 		this.desglose[tipo] += cantidad;
-		total+=cantidad*cambio[tipo];
-
+		total += cantidad * cambio[tipo];
+		System.out.println(this);
 	}
 
 	public void meterDinero() {
 		int[] meter = new int[cambio.length];
 		int sum = 0;
-		System.out.println("Introduce la cantidad de monedas de € ..(total:" + sum + ")");
-		meter[5] = teclado.nextInt();
-		sum += meter[5];
-		System.out.println("Introduce la cantidad de monedas de 2€ ..(total:" + sum + ")");
-		meter[4] = teclado.nextInt();
-		sum += meter[4] * 2;
-		System.out.println("Introduce la cantidad de billetes de 5€ ..(total:" + sum + ")");
-		meter[3] = teclado.nextInt();
-		sum += meter[3] * 5;
-		System.out.println("Introduce la cantidad de billetes de 10€ ..(total:" + sum + ")");
-		meter[2] = teclado.nextInt();
-		sum += meter[2] * 10;
-		System.out.println("Introduce la cantidad de billetes de 20€ ..(total:" + sum + ")");
-		meter[1] = teclado.nextInt();
-		sum += meter[1] * 20;
-		System.out.println("Introduce la cantidad de billetes de 50€ ..(total:" + sum + ")");
-		meter[0] = teclado.nextInt();
-		sum += meter[0] * 50;
 		abrirHucha();
-		for (int i = 0; i < cambio.length; i++) {
-			desglose[i] = meter[i];
+		if (abierta) {
+			System.out.println("Introduce la cantidad de monedas de € ..(total:" + sum + ")");
+			meter[5] = teclado.nextInt();
+			sum += meter[5];
+			desglose[5] += meter[5];
+			System.out.println("Introduce la cantidad de monedas de 2€ ..(total:" + sum + ")");
+			meter[4] = teclado.nextInt();
+			sum += meter[4] * 2;
+			desglose[4] += meter[4];
+			System.out.println("Introduce la cantidad de billetes de 5€ ..(total:" + sum + ")");
+			meter[3] = teclado.nextInt();
+			sum += meter[3] * 5;
+			desglose[3] += meter[3];
+			System.out.println("Introduce la cantidad de billetes de 10€ ..(total:" + sum + ")");
+			meter[2] = teclado.nextInt();
+			sum += meter[2] * 10;
+			desglose[2] += meter[2];
+			System.out.println("Introduce la cantidad de billetes de 20€ ..(total:" + sum + ")");
+			meter[1] = teclado.nextInt();
+			sum += meter[1] * 20;
+			desglose[1] += meter[1];
+			System.out.println("Introduce la cantidad de billetes de 50€ ..(total:" + sum + ")");
+			meter[0] = teclado.nextInt();
+			sum += meter[0] * 50;
+			desglose[0] += meter[0];
+			total += sum;
+			abierta = false;
+		} else {
+			System.out.println("Hucha cerrada, dinero no introducido");
 		}
-		abierta = false;
 	}
 
-	public int[] sacarDinero(int total) {
-		
+	public void sacarDinero(int total) {
 		int[] dinero = new int[cambio.length];
 		if (total >= this.total) {
 			total = this.total;
@@ -284,34 +274,29 @@ public class Hucha {
 			}
 
 		} else {
-			this.total -= total;
-
 			for (int i = 0; i < cambio.length; i++) {
-				if (total >= desglose[i]&& desglose[i]>0) {
+				if ((total / cambio[i] <= desglose[i]) && desglose[i] > 0) {
 					desglose[i] -= total / cambio[i];
-					dinero[i] = total / cambio[i];
-					total %= cambio[i];
-				}else {
-					System.out.println("La cantidad de dinero de "+cambio[i]+" es cero.");
+					dinero[i] += total / cambio[i];
+					total -= dinero[i] * cambio[i];
+					this.total -= dinero[i] * cambio[i];
 				}
 			}
 		}
 		cerrarHucha();
 		Resumen(dinero);
-		return dinero;
 	}
 
 	public void Resumen(int[] dinero) {
-		
-		int total= (dinero[0]*50)+(dinero[1]*20)+(dinero[2]*10)+(dinero[3]*5)+(dinero[4]*2)+(dinero[5]);
+		int total = (dinero[0] * 50) + (dinero[1] * 20) + (dinero[2] * 10) + (dinero[3] * 5) + (dinero[4] * 2)
+				+ (dinero[5]);
 		System.out.println("El dinero sacado es:\nTOTAL= " + total + " €uros.\n" + dinero[5] + " moneda/s de 1 euro\n"
 				+ dinero[4] + " moneda/s de 2 euros\n" + dinero[3] + " billete/s de 5 euros\n" + dinero[2]
 				+ " billete/s de 10 euros\n" + dinero[1] + " billete/s de 20 euros\n" + dinero[0]
 				+ " billete/s de 50 euros\n----------------\n----------------\n");
-
 	}
 
-	public int[] sacarDinero() {
+	public void sacarDinero() {
 		abrirHucha();
 		int[] sacar = new int[cambio.length];
 		int sum = 0;
@@ -349,19 +334,17 @@ public class Hucha {
 					this.total -= (sacar[i] * cambio[i]);
 
 				} else {
-					desglose[i]=desglose[i]-sacar[i];
+					desglose[i] -= sacar[i];
 					this.total -= (sacar[i] * cambio[i]);
 				}
 				sum -= (sacar[i] * cambio[i]);
-				if (sum != 0) {
-				sacarDinero(sum);
-				}
 			}
 		}
-
 		abierta = false;
-
-		return sacar;
+		Resumen(sacar);
+		if (sum != 0) {
+			System.out.println("No se ha podido sacar " + sum + "€ por no haber tipo de moneda/billete adecuados.");
+		}
+		System.out.println(this);
 	}
-
 }
