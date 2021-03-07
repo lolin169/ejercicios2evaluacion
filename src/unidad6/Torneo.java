@@ -46,9 +46,9 @@ public class Torneo {
 
 			respuesta = teclado.nextLine();
 		}
-		if (!respuesta.equalsIgnoreCase("fin"))
-			respuesta = teclado.next();
-		while (!respuesta.equalsIgnoreCase("fin")) {
+		respuesta = teclado.next();
+		while (!respuesta.equalsIgnoreCase("fin") || respuesta.equalsIgnoreCase("torneo")) {
+
 			try {
 				Elemento ele = Elemento.valueOf(respuesta.toUpperCase());
 				for (Entrenador e : entrenadores) {
