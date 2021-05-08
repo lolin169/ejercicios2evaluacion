@@ -1,6 +1,9 @@
 package unidad7;
 
-public class Publicación implements Comparable<Object> {
+import java.io.Serializable;
+
+public class Publicación implements Comparable<Object>,Serializable {
+	private static final long serialVersionUID = 1L;
 	private int codigo;
 	private String titulo;
 	private int año;
